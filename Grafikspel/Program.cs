@@ -20,7 +20,7 @@ Color mycolor = new Color(47, 79, 79, 255);
 
 string currentscene = "start"; // Start,game,win,gameover
 
-Vector2 enemyMovement =  new Vector2(1, 0);
+Vector2 enemyMovement = new Vector2(1, 0);
 float enemySpeed = 2;
 
 
@@ -51,19 +51,18 @@ while (Raylib.WindowShouldClose() == false)
         }
 
         Vector2 playerpos = new Vector2(character.x, character.y);
-         Vector2 enemypos = new Vector2(enemyrect.x, enemyrect.y);
+        Vector2 enemypos = new Vector2(enemyrect.x, enemyrect.y);
 
-         Vector2 diff = playerpos - enemypos;
-         
+        Vector2 diff = playerpos - enemypos;
+
 
         Vector2 enemyDirection = Vector2.Normalize(diff);
-
 
         enemyMovement = enemyDirection * enemySpeed;
 
         enemyrect.x += enemyMovement.X;
         enemyrect.y += enemyMovement.Y;
-        
+
     }
     else if (currentscene == "start")
     {
