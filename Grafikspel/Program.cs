@@ -18,16 +18,28 @@ Rectangle enemyrect = new Rectangle(700, 500, 64, 64);
 
 Color mycolor = new Color(47, 79, 79, 255);
 
-string currentscene = "start"; // Start,game,win,gameover
+string currentscene = "start";
 
 Vector2 enemyMovement = new Vector2(1, 0);
-float enemySpeed = 2;
+float enemySpeed = 1;
+
+void Handletimer()
+{
+    enemySpeed = enemySpeed + 0.1f;
+}
+System.Timers.Timer timer = new(interval: 1000);
+timer.Elapsed += (sender, e) => Handletimer();
+
 
 
 while (Raylib.WindowShouldClose() == false)
 {
+
+
     if (currentscene == "game")
     {
+        timer.Start();
+        Console.WriteLine(enemySpeed);
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D) && character.x < (screenwidth - 64))
         {
             character.x += 10f;
@@ -48,6 +60,7 @@ while (Raylib.WindowShouldClose() == false)
         if (Raylib.CheckCollisionRecs(character, enemyrect))
         {
             currentscene = "gameover";
+            timer.Stop();
         }
 
         Vector2 playerpos = new Vector2(character.x, character.y);
@@ -95,19 +108,18 @@ while (Raylib.WindowShouldClose() == false)
         Raylib.DrawText("Press Enter to start", 200, 200, 32, Color.WHITE);
 
 
-
-
     }
     else if (currentscene == "gameover")
     {
         Raylib.DrawText("GAME OVER", 100, 300, 128, Color.BLACK);
     }
 
-    //  Raylib.DrawRectangleRec(character, mycolor);
+
 
 
 
 
     Raylib.EndDrawing();
 }
+
 
