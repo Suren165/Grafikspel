@@ -8,9 +8,9 @@ const int screenheight = 768;
 Raylib.InitWindow(screenwidth, screenheight, "topdown game");
 Raylib.SetTargetFPS(60);
 
-
+Texture2D Imageenemy = Raylib.LoadTexture("monster.png");
 Texture2D avatarImage = Raylib.LoadTexture("avatar.png");
-Texture2D startimage = Raylib.LoadTexture("Bakgrund.png");
+
 
 Rectangle character = new Rectangle(0, 60, avatarImage.width, avatarImage.height);
 
@@ -23,14 +23,25 @@ string currentscene = "start";
 Vector2 enemyMovement = new Vector2(1, 0);
 float enemySpeed = 1;
 
-void Handletimer()
+void tid()
 {
     enemySpeed = enemySpeed + 0.1f;
 }
 System.Timers.Timer timer = new(interval: 1000);
-timer.Elapsed += (sender, e) => Handletimer();
+timer.Elapsed += (sender, e) => tid();
 
+int points = 0;
+int winScore = 8000;
 
+void reset()
+{
+    enemyrect.x = 700;
+    enemyrect.y = 500;
+    character.x = 10;
+    character.y = 10;
+    points = 0;
+    enemySpeed = 1;
+}
 
 while (Raylib.WindowShouldClose() == false)
 {
@@ -43,25 +54,33 @@ while (Raylib.WindowShouldClose() == false)
         if (Raylib.IsKeyDown(KeyboardKey.KEY_D) && character.x < (screenwidth - 64))
         {
             character.x += 10f;
-
+            points += 1;
         }
         if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && character.y + 64 < screenheight)
         {
             character.y += 10f;
+            points += 1;
         }
         if (Raylib.IsKeyDown(KeyboardKey.KEY_W) && character.y > 0)
         {
             character.y -= 10f;
+            points += 1;
         }
         if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && character.x > 0)
         {
             character.x -= 10f;
+            points += 1;
         }
         if (Raylib.CheckCollisionRecs(character, enemyrect))
         {
             currentscene = "gameover";
             timer.Stop();
         }
+
+        Raylib.DrawText("Points:" + points,20,20,24, Color.RED);
+          
+        
+
 
         Vector2 playerpos = new Vector2(character.x, character.y);
         Vector2 enemypos = new Vector2(enemyrect.x, enemyrect.y);
@@ -90,7 +109,7 @@ while (Raylib.WindowShouldClose() == false)
     Raylib.BeginDrawing();
 
     Raylib.ClearBackground(Color.WHITE);
-
+    
     if (currentscene == "game")
     {
         Raylib.DrawTexture(avatarImage,
@@ -99,27 +118,45 @@ while (Raylib.WindowShouldClose() == false)
         Color.WHITE
         );
 
-        Raylib.DrawRectangleRec(enemyrect, Color.RED);
+        Raylib.DrawTexture(Imageenemy, (int)enemyrect.x, (int)enemyrect.y, Color.WHITE);
+           
+        if (points >= winScore){
+            currentscene = "win";
+        }
+
+        
     }
 
     else if (currentscene == "start")
     {
-        Raylib.DrawTexture(startimage, 0, 0, Color.WHITE);
-        Raylib.DrawText("Press Enter to start", 200, 200, 32, Color.WHITE);
+        
+        Raylib.DrawText("Press Enter to start", 100, 300, 70, Color.BLACK);
+        Raylib.DrawText(" W= upp S=ner D=höger A= vänster", 100, 500, 20, Color.BLACK);
 
-
+    }
+     else if (currentscene == "win")
+    {
+        Raylib.DrawText("You Win", 100, 500, 128, Color.BLACK);
     }
     else if (currentscene == "gameover")
     {
-        Raylib.DrawText("GAME OVER", 100, 300, 128, Color.BLACK);
+        Raylib.DrawText("GAME OVER", 100, 500, 128, Color.BLACK);
+
+         reset();
+        if(Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+        {
+            currentscene = "start";
+        }
     }
+   
 
 
 
+    
 
 
 
     Raylib.EndDrawing();
 }
 
-
+;
